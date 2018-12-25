@@ -12,15 +12,14 @@
 |
 */
 
-/*Route::get('/', function () {
-    return view('auth/login');
-});*/
-
 Route::get('/',function(){
     return view('auth.login');
 });
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+
+
 
 Route::group(['prex'=>'home','middleware'=>'auth.home'],function(){
     Route::get('index','Home\PageController@root')->name('root');
@@ -29,15 +28,4 @@ Route::group(['prex'=>'home','middleware'=>'auth.home'],function(){
     });
 });
 
-
-
-
-
-
-Route::group(['middleware'=>['web']],function(){
-
-    Route::any('student/create',['uses'=>'StudentController@create']);
-    Route::post('student/save',['uses'=>'StudentController@save']);
-    Route::any('student/update/{id}',['uses'=>'StudentController@update']);
-});
 

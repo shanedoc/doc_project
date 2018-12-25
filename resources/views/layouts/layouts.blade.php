@@ -18,18 +18,19 @@
 
     @include('layouts._header')
 
-    <div class="container">
+    <div class='sui-container'>
 
         @yield('content')
 
     </div>
 
-    @include('layouts._footer')
+    {{--@include('layouts._footer')--}}
 </div>
 
 <!-- Scripts -->
 <script src="http://g.alicdn.com/sj/lib/jquery.min.js"></script>
 <script src="http://g.alicdn.com/sj/dpl/1.5.1/js/sui.min.js"></script>
+<script type="text/javascript" src="{{URL::asset('/common/common.js')}}"></script>
 </body>
 
 </html>

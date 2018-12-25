@@ -1,4 +1,4 @@
-<h4>come on in!</h4>
+
 <div class="sui-navbar">
     <div class="navbar-inner"><a href="#" class="sui-brand">Marry Christmas</a>
         <ul class="sui-nav">
