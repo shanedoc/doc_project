@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Model\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,37 +44,31 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $validator = $this->validateLogin($request->all());
+
         if($validator->fails()){
             $error = $validator->errors()->toArray();
             $error = $this->geterrorMsg($error);
             return $this->error($error);
         }
-
-        if ($this->attemptLogin($request)) {
-            $user = Auth::user();
-            if($user->status!=1){
-                auth()->logout();
-                return $this->error(config('response.user_status_unnornal'));
-            }
-            if($user->is_admin !=0){
-                auth()->logout();
-                return $this->error(config('response.user_msg_error'));
-            }
-            return $this->success(['msg'=>'user_login_success']);
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $login = Auth::attempt(['email'=>$email,'password'=>$password,
+            'is_admin'=>User::USER_LOGIN_STATUS,'status'=>User::USER_NORMAL_STATUS]);
+        if($login){
+            return $this->success();
         }else{
-            return $this->error(config('response.user_msg_error'));
+            return $this->error('用户名或密码错误');
         }
 
         return $this->sendFailedLoginResponse($request);
 
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $this->guard()->logout();
+        Auth::guard($this->getGuard())->logout();
 
-        $request->session()->invalidate();
-        return $this->loggedOut($request) ?: redirect('/');
+        return redirect('show');
     }
 
     public function showLoginForm()
@@ -83,20 +78,21 @@ class LoginController extends Controller
 
     public function username()
     {
-        return 'username';
+        return 'email';
     }
 
     protected function validateLogin($data)
     {
         return Validator::make($data,[
-            'username' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:6|max:12',
         ], [
             'required' => ':attribute 为必填项',
             'min' => ':attribute 最少为6位',
             'max' => ':attribute 最长为12位',
+            'email' => ':attribute 格式不正确'
         ], [
-            'username' => '用户名',
+            'email' => '邮箱',
             'password' => '密码'
         ]);
     }

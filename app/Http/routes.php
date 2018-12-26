@@ -12,20 +12,18 @@
 |
 */
 
-Route::get('/',function(){
+Route::get('show',function(){
     return view('auth.login');
 });
+
+Route::get('showRegister','Auth\RegisterController@showRegistrationForm');
+Route::post('register','Auth\RegisterController@register')->name('register');
 Route::post('login', 'Auth\LoginController@login')->name('login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
-
-
-
-Route::group(['prex'=>'home','middleware'=>'auth.home'],function(){
-    Route::get('index','Home\PageController@root')->name('root');
-    Route::get('student/index',function(){
-        return 'student/index';
-    });
+Route::group(['middleware'=>'auth.home'],function(){
+    //登陆之后
+    Route::get('index','Home\PageController@root');
 });
 
 
